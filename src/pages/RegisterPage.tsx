@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/contexts/AuthContext'
 import { generateReferralCode } from '@/lib/utils'
 import { toast } from 'sonner'
 import { Eye, EyeOff } from 'lucide-react'
@@ -9,6 +10,7 @@ type Step = 'form' | 'otp'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
+  const { refreshProfile } = useAuth()
   const [searchParams] = useSearchParams()
   const refCode = searchParams.get('ref') || ''
 
@@ -139,6 +141,8 @@ export default function RegisterPage() {
     })
 
     toast.success('Account created! Welcome to Samsung Earnings 🎉')
+    // Refresh profile so the 7,000 bonus balance is loaded immediately
+    await refreshProfile()
     navigate('/dashboard')
   }
 

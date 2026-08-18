@@ -66,7 +66,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!mounted) return
         if (event === 'SIGNED_IN' && session?.user) {
           setUser(session.user)
-          await fetchProfile(session.user.id)
+          // Retry fetch up to 3 times to ensure profile upsert is complete
+          for (let i = 0; i < 3; i++) {
+            const { data } = await supabase.from('user_profiles').select('*').eq('id', session.user.id).single()
+            if (data) { setProfile(data as UserProfile); break }
+            await new Promise(r => setTimeout(r, 600))
+          }
           setLoading(false)
         } else if (event === 'SIGNED_OUT') {
           setUser(null)
