@@ -53,10 +53,19 @@ export default function WithdrawPage() {
     if (amt > (profile?.wallet_balance || 0)) { toast.error('Insufficient balance'); return }
     if (todayCount >= 2) { toast.error('Maximum 2 withdrawals per day reached'); return }
 
+    // Check if user has recharged at least once (approved recharge)
+    const { data: recharges } = await supabase.from('recharge_requests').select('id').eq('user_id', profile!.id).eq('status', 'approved').limit(1)
+    if (!recharges || recharges.length === 0) {
+      toast.error('You must recharge your account before withdrawing.')
+      navigate('/recharge')
+      return
+    }
+
     // Check if user has at least one active package
     const { data: activePkgs } = await supabase.from('user_packages').select('id').eq('user_id', profile!.id).eq('status', 'active').limit(1)
     if (!activePkgs || activePkgs.length === 0) {
-      toast.error('You must have at least one active package to withdraw.')
+      toast.error('You must buy a product before withdrawing.')
+      navigate('/products')
       return
     }
 

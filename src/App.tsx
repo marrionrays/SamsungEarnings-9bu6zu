@@ -20,6 +20,8 @@ import AdminWithdrawalsPage from '@/pages/admin/AdminWithdrawalsPage'
 import AdminRechargesPage from '@/pages/admin/AdminRechargesPage'
 import AdminUsersPage from '@/pages/admin/AdminUsersPage'
 import AdminGiftCodesPage from '@/pages/admin/AdminGiftCodesPage'
+import AdminLoginPage from '@/pages/admin/AdminLoginPage'
+import MissionPage from '@/pages/MissionPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
@@ -62,6 +64,8 @@ function AppRoutes() {
       <Route path="/mine" element={<ProtectedRoute><MinePage /></ProtectedRoute>} />
       <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+      <Route path="/mission" element={<ProtectedRoute><MissionPage /></ProtectedRoute>} />
+      <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
         <Route index element={<AdminDashboard />} />
         <Route path="packages" element={<AdminPackagesPage />} />

@@ -8,7 +8,7 @@ import BottomNav from '@/components/layout/BottomNav'
 import { CheckIn } from '@/types'
 import {
   User, Wallet, LogOut, ChevronRight, Gift,
-  Bell, MessageCircle, Star, Shield
+  Bell, MessageCircle, Star, Shield, Target
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -136,8 +136,9 @@ export default function MinePage() {
   }
 
   const MENU_ITEMS = [
+    { icon: Target, label: 'Task Center', onClick: () => navigate('/mission'), color: 'text-samsung-gold' },
     { icon: Wallet, label: 'My Wallets', onClick: () => navigate('/wallet'), color: 'text-samsung-accent' },
-    { icon: Star, label: 'My Products', onClick: () => navigate('/my-products'), color: 'text-samsung-gold' },
+    { icon: Star, label: 'My Products', onClick: () => navigate('/my-products'), color: 'text-green-400' },
     { icon: Bell, label: 'Notifications', onClick: () => navigate('/notifications'), color: 'text-purple-400' },
     { icon: MessageCircle, label: 'Official Support', onClick: () => window.open('https://t.me/+adk1usHyKF4yYzQ0', '_blank'), color: 'text-blue-400' },
     { icon: MessageCircle, label: 'Community Group', onClick: () => window.open('https://t.me/+kH7QuzE6dp0xZmVk', '_blank'), color: 'text-green-400' },

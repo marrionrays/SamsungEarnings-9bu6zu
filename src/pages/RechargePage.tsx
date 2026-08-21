@@ -9,7 +9,7 @@ import { RechargeRequest } from '@/types'
 import { Copy, ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
 
-const MTN_NUMBER = '0782031407'
+const MTN_NUMBER = '0756406186'
 const MTN_NAME = 'Kyosiimire Joan'
 const AIRTEL_NUMBER = '0746085840'
 const AIRTEL_NAME = 'Nabakooza Milly'
