@@ -108,7 +108,7 @@ export default function AdminUsersPage() {
                       <p className="font-semibold text-sm">{user.username}</p>
                       {user.is_admin && <span className="bg-red-500/20 text-red-400 text-[10px] px-1.5 py-0.5 rounded font-bold">ADMIN</span>}
                     </div>
-                    <p className="text-samsung-muted text-xs">{user.phone || user.email}</p>
+                    <p className="text-samsung-muted text-xs">{user.phone || '—'}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">

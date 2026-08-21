@@ -3,23 +3,34 @@ import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { toast } from 'sonner'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Phone } from 'lucide-react'
+
+// Convert phone number to internal email for Supabase auth
+function phoneToEmail(phone: string) {
+  const clean = phone.replace(/\D/g, '')
+  return `${clean}@samsungearnings.com`
+}
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const { refreshProfile } = useAuth()
-  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [showPwd, setShowPwd] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email || !password) { toast.error('Please fill all fields'); return }
+    if (!phone || !password) { toast.error('Please fill all fields'); return }
+    if (!phone.match(/^0[0-9]{9}$/)) {
+      toast.error('Enter a valid 10-digit phone number (e.g. 0712345678)')
+      return
+    }
     setLoading(true)
+    const email = phoneToEmail(phone)
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
-      toast.error(error.message || 'Login failed')
+      toast.error('Invalid phone number or password')
       setLoading(false)
       return
     }
@@ -33,7 +44,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-samsung-dark flex flex-col">
       {/* Header */}
       <div className="flex items-center gap-3 px-5 py-5">
-        <button onClick={() => navigate('/')} className="text-samsung-muted hover:text-white transition-colors">
+        <button onClick={() => navigate('/')} className="text-samsung-muted hover:text-white transition-colors text-lg">
           ←
         </button>
         <div className="flex items-center gap-2">
@@ -42,20 +53,24 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <div className="flex-1 px-5 pt-4">
+      <div className="flex-1 px-5 pt-4 pb-8">
         <h1 className="text-2xl font-extrabold mb-1">Welcome back!</h1>
-        <p className="text-samsung-muted text-sm mb-8">Sign in to your account</p>
+        <p className="text-samsung-muted text-sm mb-8">Sign in with your phone number</p>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-300">Email Address</label>
-            <input
-              type="email"
-              className="samsung-input"
-              placeholder="your@email.com"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-            />
+            <label className="block text-sm font-medium mb-2 text-gray-300">Phone Number</label>
+            <div className="relative">
+              <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-samsung-muted" />
+              <input
+                type="tel"
+                className="samsung-input pl-9"
+                placeholder="07XXXXXXXX"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                maxLength={10}
+              />
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium mb-2 text-gray-300">Password</label>
@@ -63,7 +78,7 @@ export default function LoginPage() {
               <input
                 type={showPwd ? 'text' : 'password'}
                 className="samsung-input pr-12"
-                placeholder="Enter password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
               />
@@ -75,7 +90,12 @@ export default function LoginPage() {
           </div>
 
           <button type="submit" disabled={loading} className="btn-primary mt-2">
-            {loading ? 'Signing In...' : 'Sign In'}
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                Signing In...
+              </span>
+            ) : 'Sign In'}
           </button>
         </form>
 
@@ -88,10 +108,13 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Admin hint */}
-        <div className="mt-8 p-4 bg-samsung-card border border-samsung-border rounded-xl">
-          <p className="text-xs text-samsung-muted text-center">
-            Admin? Login with your admin email and go to <span className="text-samsung-accent">/admin</span>
+        {/* Admin login link */}
+        <div className="mt-8 p-4 bg-samsung-card border border-samsung-border rounded-xl text-center">
+          <p className="text-xs text-samsung-muted">
+            Administrator?{' '}
+            <button onClick={() => navigate('/admin/login')} className="text-red-400 hover:underline font-semibold">
+              Admin Panel Login
+            </button>
           </p>
         </div>
       </div>

@@ -26,13 +26,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('user_profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-    if (!error && data) {
-      setProfile(data as UserProfile)
+    // Retry up to 5 times to handle trigger timing
+    for (let i = 0; i < 5; i++) {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+      if (!error && data) {
+        setProfile(data as UserProfile)
+        return
+      }
+      await new Promise(r => setTimeout(r, 400))
     }
   }
 
