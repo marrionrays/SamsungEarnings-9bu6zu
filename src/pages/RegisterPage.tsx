@@ -38,10 +38,13 @@ export default function RegisterPage() {
       toast.error('Please fill all required fields')
       return
     }
-    if (!phone.match(/^0[0-9]{9}$/)) {
-      toast.error('Phone must be 10 digits starting with 0 (e.g. 0712345678)')
+    // Normalize: strip spaces/dashes, convert +256 to 0
+    const normalizedPhone = phone.trim().replace(/[\s\-]/g, '').replace(/^\+256/, '0').replace(/^256/, '0')
+    if (!normalizedPhone.match(/^0[0-9]{8,9}$/)) {
+      toast.error('Enter a valid Ugandan phone number (e.g. 0756406186)')
       return
     }
+    form.phone = normalizedPhone
     if (password.length < 6) {
       toast.error('Password must be at least 6 characters')
       return
@@ -52,14 +55,14 @@ export default function RegisterPage() {
     }
 
     setLoading(true)
-    const email = phoneToEmail(phone)
+    const email = phoneToEmail(form.phone)
 
     // Sign up with generated email + password
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { username, phone },
+        data: { username, phone: form.phone },
       },
     })
 
@@ -110,7 +113,7 @@ export default function RegisterPage() {
         id: signUpData.user.id,
         username,
         email,
-        phone,
+        phone: form.phone,
         referral_code: myCode,
         referrer_id: referrerId,
         wallet_balance: 7000,

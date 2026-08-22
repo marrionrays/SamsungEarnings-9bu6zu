@@ -22,12 +22,13 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!phone || !password) { toast.error('Please fill all fields'); return }
-    if (!phone.match(/^0[0-9]{9}$/)) {
-      toast.error('Enter a valid 10-digit phone number (e.g. 0712345678)')
+    const normalizedPhone = phone.trim().replace(/[\s\-]/g, '').replace(/^\+256/, '0').replace(/^256/, '0')
+    if (!normalizedPhone.match(/^0[0-9]{8,9}$/)) {
+      toast.error('Enter a valid Ugandan phone number (e.g. 0756406186)')
       return
     }
     setLoading(true)
-    const email = phoneToEmail(phone)
+    const email = phoneToEmail(normalizedPhone)
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
       toast.error('Invalid phone number or password')
