@@ -22,9 +22,10 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!phone || !password) { toast.error('Please fill all fields'); return }
-    const normalizedPhone = phone.trim().replace(/[\s\-]/g, '').replace(/^\+256/, '0').replace(/^256/, '0')
-    if (!normalizedPhone.match(/^0[0-9]{8,9}$/)) {
-      toast.error('Enter a valid Ugandan phone number (e.g. 0756406186)')
+    // Normalize: strip all non-digit characters
+    const normalizedPhone = phone.trim().replace(/[^0-9]/g, '')
+    if (normalizedPhone.length < 9) {
+      toast.error('Enter a valid phone number (at least 9 digits)')
       return
     }
     setLoading(true)

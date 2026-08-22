@@ -38,10 +38,10 @@ export default function RegisterPage() {
       toast.error('Please fill all required fields')
       return
     }
-    // Normalize: strip spaces/dashes, convert +256 to 0
-    const normalizedPhone = phone.trim().replace(/[\s\-]/g, '').replace(/^\+256/, '0').replace(/^256/, '0')
-    if (!normalizedPhone.match(/^0[0-9]{8,9}$/)) {
-      toast.error('Enter a valid Ugandan phone number (e.g. 0756406186)')
+    // Normalize: strip all non-digit characters
+    const normalizedPhone = phone.trim().replace(/[^0-9]/g, '')
+    if (normalizedPhone.length < 9) {
+      toast.error('Enter a valid phone number (at least 9 digits)')
       return
     }
     form.phone = normalizedPhone
