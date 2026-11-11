@@ -32,7 +32,7 @@ export default function LoginPage() {
     const email = phoneToEmail(normalizedPhone)
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
-      toast.error('Invalid phone number or password')
+      toast.error('valid phone number or password')
       setLoading(false)
       return
     }
