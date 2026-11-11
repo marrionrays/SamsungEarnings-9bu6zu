@@ -25,7 +25,7 @@ export default function LoginPage() {
     // Normalize: strip all non-digit characters
     const normalizedPhone = phone.trim().replace(/[^0-9]/g, '')
     if (normalizedPhone.length < 9) {
-      toast.error('Enter a valid phone number (at least 9 digits)')
+      toast.error('Enter a invalid phone number (at least 9 digits)')
       return
     }
     setLoading(true)
